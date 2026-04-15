@@ -1,0 +1,74 @@
+.greyfont{
+    color: #a3a3a3 !important;
+}
+
+.fontroman{
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.centertext{
+    text-align: center;
+}
+
+.contactinfo{
+    font-size: 15px;
+    font-weight: normal;
+}
+
+.nobtmmargin{
+    margin-bottom: 0;
+}
+
+.imphead{
+    border-bottom: 1px solid;
+    font-weight: bold;
+    font-size: 15px;
+    line-height: 1;
+    padding-top: 1px;
+    padding-bottom: 1px;
+}
+
+.regtext{
+    font-size: 17px;
+    line-height: 1.1;
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.textright{
+    text-align: right;
+}
+
+.nomargins{
+    margin-top: 0;
+    margin-bottom: 0;
+}
+
+.line{
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-top: 0;
+}
+
+.nobold{
+    font-weight: normal;
+}
+
+.bold{
+    font-weight: bold;
+}
+
+.italic{
+
+}
+
+.bullets{
+    font-size: 15px;
+
+}
+
+.grayfont{
+    color: gray;
+    font-size: 10px;
+}

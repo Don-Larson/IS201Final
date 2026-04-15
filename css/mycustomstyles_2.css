@@ -1,0 +1,84 @@
+.aquabackground{
+    background: rgb(136, 250, 250);
+}
+
+.headspace{
+    top: 5px;
+    left: 5px;
+}
+
+.menubox{
+    border-width: 1px;
+    border-style: solid;
+    padding: 3px 5px;
+    background-color: #cccccc;
+
+    text-decoration: none;
+    font-weight: bold;
+}
+
+.bold{
+    font-weight: bolder;
+}
+
+.italic{
+    font-style: italic;
+}
+
+.fantasyfont{
+    font-family: cursive;
+}
+
+.introparagraph{
+    font-size: 20px;
+    font-family: 'Times New Roman', Times, serif;
+}
+
+.centertext{
+    text-align: center;
+}
+
+.mainparagraph{
+    font-size: 15px;
+    margin-left: 120px;
+    margin-right: 120px;
+    color: grey;
+}
+
+.header{
+    height: 20px;
+    background-color: grey;
+    padding: 12px 5px;
+}
+
+.leftmenu{
+    top: 60px;
+    left: 8px;
+    width: 100px;
+    border: solid;
+    background-color: grey;
+}
+
+.maintextarea{
+    top: 25px;
+    left: 400px;
+}
+
+.common{
+    position: absolute;
+}
+
+.footer{
+    top: 164px;
+    left: 8px;
+    width: 100px;
+    border: solid;
+    background-color: grey;
+    
+}
+
+.centerYouTube{
+    display: flex;
+    justify-content: center;
+}
+
