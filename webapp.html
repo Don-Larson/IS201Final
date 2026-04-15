@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VA WRX Boost Cost Calculator</title>
-  <link rel="stylesheet" href="css/mycustomstyles_2.css">
+  <title>WRX Boost, MPG, and Reliability Calculator</title>
   <style>
     :root {
       --bg: #0f172a;
@@ -19,9 +18,7 @@
       --border: #475569;
     }
 
-    * {
-      box-sizing: border-box;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
@@ -45,6 +42,30 @@
       color: var(--muted);
       margin-bottom: 24px;
       line-height: 1.5;
+    }
+
+    .nav-buttons {
+      display: flex;
+      gap: 12px;
+      margin: 14px 0 22px;
+      flex-wrap: wrap;
+    }
+
+    .nav-btn {
+      display: inline-block;
+      text-decoration: none;
+      background: #2563eb;
+      color: white;
+      padding: 10px 16px;
+      border-radius: 10px;
+      font-weight: bold;
+      border: 1px solid rgba(255,255,255,0.08);
+      transition: 0.2s;
+    }
+
+    .nav-btn:hover {
+      transform: translateY(-2px);
+      background: #1d4ed8;
     }
 
     .grid {
@@ -91,6 +112,7 @@
 
     input[type="range"] {
       padding: 0;
+      accent-color: var(--accent);
     }
 
     .full-width {
@@ -105,7 +127,7 @@
     }
 
     .range-value {
-      min-width: 70px;
+      min-width: 85px;
       text-align: right;
       font-weight: bold;
       color: #bfdbfe;
@@ -175,9 +197,7 @@
     .risk-high { background: rgba(249, 115, 22, 0.18); color: #fdba74; }
     .risk-severe { background: rgba(239, 68, 68, 0.18); color: #fca5a5; }
 
-    .chart-card {
-      margin-top: 20px;
-    }
+    .chart-card { margin-top: 20px; }
 
     canvas {
       width: 100%;
@@ -206,36 +226,10 @@
     }
 
     @media (max-width: 900px) {
-      .grid,
-      .form-grid,
-      .results-grid {
+      .grid, .form-grid, .results-grid {
         grid-template-columns: 1fr;
       }
     }
-
-    .nav-buttons {
-    display: flex;
-    gap: 12px;
-    margin-bottom: 20px;
-    }
-
-    .nav-btn {
-    background: #3b82f6;
-    color: white;
-    border: none;
-    padding: 10px 16px;
-    border-radius: 10px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: 0.2s;
-    }
-
-    .nav-btn:hover {
-    background: #2563eb;
-    transform: translateY(-2px);
-    }
-
-
   </style>
 </head>
 <body>
@@ -264,12 +258,12 @@
         
         <br><br>
     </div>
-    <h1>VA WRX Boost & Reliability Calculator</h1>
+  <div class="container">
+    <h1>WRX Boost, MPG, and Reliability Calculator</h1>
     <p class="subtitle">
-      Estimate MPG loss, range loss per tank, and possible engine-life reduction from increased boost in for VB Subaru WRXs.
-      This is an educational estimator for a CS class project, not a real mechanical prediction.
+      Estimate horsepower, MPG change, range loss per tank, and possible engine-life reduction from increased boost.
+      This is an educational model for a class project using a best-case stock engine-life assumption, not a real mechanical prediction.
     </p>
-
     <div class="grid">
       <section class="card">
         <h2>Inputs</h2>
@@ -283,30 +277,43 @@
               <option value="2018">2018</option>
               <option value="2019">2019</option>
               <option value="2020">2020</option>
-              <option value="2021" selected>2021</option>
+              <option value="2021">2021</option>
+              <option value="2022">2022</option>
+              <option value="2023">2023</option>
+              <option value="2024">2024</option>
+              <option value="2025">2025</option>
+              <option value="2026" selected>2026</option>
             </select>
           </div>
 
           <div>
             <label for="baselineMpg">Baseline MPG</label>
-            <input id="baselineMpg" type="number" step="0.1" value="23" />
+            <input id="baselineMpg" type="number" step="0.1" value="22" />
           </div>
 
           <div>
             <label for="stockBoost">Stock / Current Boost (psi)</label>
-            <input id="stockBoost" type="number" step="0.1" value="15.9" />
+            <input id="stockBoost" type="number" step="0.1" value="12.0" />
           </div>
 
           <div>
             <label for="tankSize">Tank Size (gallons)</label>
-            <input id="tankSize" type="number" step="0.1" value="15.9" />
+            <input id="tankSize" type="number" step="0.1" value="16.6" />
           </div>
 
           <div class="full-width">
             <label for="newBoost">New Boost Target (psi)</label>
             <div class="range-wrap">
-              <input id="newBoost" type="range" min="10" max="28" step="0.1" value="20" />
-              <div class="range-value"><span id="newBoostValue">20.0</span> psi</div>
+              <input id="newBoost" type="range" min="8" max="28" step="0.1" value="15.2" />
+              <div class="range-value"><span id="newBoostValue">15.2</span> psi</div>
+            </div>
+          </div>
+
+          <div class="full-width">
+            <label for="boostUse">Estimated Time in Boost During Driving</label>
+            <div class="range-wrap">
+              <input id="boostUse" type="range" min="0" max="80" step="1" value="25" />
+              <div class="range-value"><span id="boostUseValue">25</span>%</div>
             </div>
           </div>
 
@@ -322,7 +329,8 @@
           <div>
             <label for="tuneQuality">Tune Quality</label>
             <select id="tuneQuality">
-              <option value="protune" selected>Stock / Pro Tune</option>
+              <option value="stock">Stock</option>
+              <option value="protune" selected>Pro Tune</option>
               <option value="ots">OTS Tune</option>
               <option value="aggressive">Aggressive / Questionable Tune</option>
             </select>
@@ -347,21 +355,20 @@
           </div>
 
           <div class="full-width">
-            <label for="baseLife">Baseline Expected Engine Life (miles)</label>
-            <input id="baseLife" type="number" step="1000" value="150000" />
+            <label for="baseLife">Assumed Stock Engine Life (Best Case, miles)</label>
+            <input id="baseLife" type="number" step="1000" value="210000" />
           </div>
         </div>
-
         <div class="button-row">
-          <button class="primary" onclick="calculate()">Calculate</button>
-          <button class="secondary" onclick="resetDefaults()">Reset Defaults</button>
+          <button id="resetBtn" class="secondary" type="button">Reset Defaults</button>
         </div>
-
         <div class="formula">
-          <strong>Teacher-friendly model:</strong><br>
-          MPG loss = added boost × boost factor × driving factor<br>
-          Engine life = baseline engine life ÷ total stress multiplier<br><br>
-          You can easily change the factors in the JavaScript section.
+          <strong>How this model works:</strong><br>
+          Estimated brake horsepower = stock crank horsepower × a boost-based power multiplier.<br>
+          Estimated wheel horsepower = brake horsepower × (1 − drivetrain loss).<br>
+          MPG change = small off-boost efficiency gain − larger penalty weighted by time in boost.<br>
+          Engine life = baseline engine life ÷ adjusted stress (includes maintenance benefits).<br><br>
+          The goal is to make the assumptions easy to explain and easy to edit for class. This version assumes a best-case stock WRX engine life baseline.
         </div>
       </section>
 
@@ -370,32 +377,42 @@
         <div class="results-grid">
           <div class="result-box">
             <div class="result-label">Added Boost</div>
-            <div class="result-value" id="addedBoostOut">4.1 psi</div>
+            <div class="result-value" id="addedBoostOut">3.2 psi</div>
+          </div>
+
+          <div class="result-box">
+            <div class="result-label">Estimated Brake Horsepower</div>
+            <div class="result-value" id="bhpOut">318 bhp</div>
+          </div>
+
+          <div class="result-box">
+            <div class="result-label">Estimated Wheel Horsepower</div>
+            <div class="result-value" id="whpOut">261 whp</div>
           </div>
 
           <div class="result-box">
             <div class="result-label">Estimated New MPG</div>
-            <div class="result-value" id="newMpgOut">21.2 mpg</div>
+            <div class="result-value" id="newMpgOut">21.4 mpg</div>
           </div>
 
           <div class="result-box">
             <div class="result-label">MPG Lost</div>
-            <div class="result-value" id="mpgLossOut">1.8 mpg</div>
+            <div class="result-value" id="mpgLossOut">0.6 mpg</div>
           </div>
 
           <div class="result-box">
             <div class="result-label">Range Lost Per Tank</div>
-            <div class="result-value" id="rangeLossOut">29.3 miles</div>
+            <div class="result-value" id="rangeLossOut">10.0 miles</div>
           </div>
 
           <div class="result-box">
             <div class="result-label">Estimated Engine Life</div>
-            <div class="result-value" id="lifeOut">121,000 mi</div>
+            <div class="result-value" id="lifeOut">122,000 mi</div>
           </div>
 
           <div class="result-box">
             <div class="result-label">Estimated Miles Lost</div>
-            <div class="result-value" id="milesLostOut">29,000 mi</div>
+            <div class="result-value" id="milesLostOut">28,000 mi</div>
           </div>
         </div>
 
@@ -403,69 +420,80 @@
           <div class="result-label">Risk Level</div>
           <div id="riskPill" class="risk-pill risk-moderate">Moderate</div>
           <div class="note" id="summaryText">
-            This setup increases operating stress, but the reliability estimate stays in a moderate range with decent supporting conditions.
+            This setup adds some stress, but stays in a moderate range in this model.
           </div>
         </div>
 
         <div class="result-box" style="margin-top:14px;">
           <div class="result-label">Engine-Life Range</div>
-          <div class="result-value" id="lifeRangeOut">112,000 - 130,000 mi</div>
+          <div class="result-value" id="lifeRangeOut">113,000 - 132,000 mi</div>
+        </div>
+
+        <div class="result-box" style="margin-top:14px;">
+          <div class="result-label">Estimate Confidence</div>
+          <div class="result-value" id="confidenceOut">Moderate</div>
+          <div class="note" id="confidenceText" style="margin-top:8px;">
+            Best used for comparing setups, not predicting a dyno number or exact engine life.
+          </div>
         </div>
 
         <div class="note">
           <strong>Disclaimer:</strong> This calculator is an educational estimate, not a real mechanical forecast.
-          Actual fuel economy and reliability depend on tune quality, fuel, maintenance, heat, knock, driving habits,
-          and supporting modifications.
+          Actual fuel economy, power, and reliability depend on tune quality, airflow, ignition timing, heat, knock,
+          altitude, drivetrain loss, maintenance, driving habits, and supporting modifications. Use dyno and datalog results for real tuning decisions.
         </div>
       </section>
     </div>
-
-    <section class="card chart-card">
-      <h2>Charts</h2>
-      <p class="subtitle" style="margin-bottom:10px;">The graphs update when you click Calculate.</p>
-      <canvas id="mpgChart" width="1000" height="320"></canvas>
-      <canvas id="lifeChart" width="1000" height="320"></canvas>
-    </section>
   </div>
 
   <script>
     const yearDefaults = {
-      2015: { mpg: 24, boost: 15.9, tank: 15.9 },
-      2016: { mpg: 23, boost: 15.9, tank: 15.9 },
-      2017: { mpg: 23, boost: 15.9, tank: 15.9 },
-      2018: { mpg: 23, boost: 15.9, tank: 15.9 },
-      2019: { mpg: 23, boost: 15.9, tank: 15.9 },
-      2020: { mpg: 23, boost: 15.9, tank: 15.9 },
-      2021: { mpg: 23, boost: 15.9, tank: 15.9 }
+      2015: { mpg: 24, stockBoost: 15.9, tank: 15.9, bhp: 268, stockTarget: 15.9, protuneTarget: 19.0 },
+      2016: { mpg: 23, stockBoost: 15.9, tank: 15.9, bhp: 268, stockTarget: 15.9, protuneTarget: 19.0 },
+      2017: { mpg: 23, stockBoost: 15.9, tank: 15.9, bhp: 268, stockTarget: 15.9, protuneTarget: 19.0 },
+      2018: { mpg: 23, stockBoost: 15.9, tank: 15.9, bhp: 268, stockTarget: 15.9, protuneTarget: 19.0 },
+      2019: { mpg: 23, stockBoost: 15.9, tank: 15.9, bhp: 268, stockTarget: 15.9, protuneTarget: 19.0 },
+      2020: { mpg: 23, stockBoost: 15.9, tank: 15.9, bhp: 268, stockTarget: 15.9, protuneTarget: 19.0 },
+      2021: { mpg: 23, stockBoost: 15.9, tank: 15.9, bhp: 268, stockTarget: 15.9, protuneTarget: 19.0 },
+      2022: { mpg: 22, stockBoost: 12.0, tank: 16.6, bhp: 271, stockTarget: 12.0, protuneTarget: 15.2 },
+      2023: { mpg: 22, stockBoost: 12.0, tank: 16.6, bhp: 271, stockTarget: 12.0, protuneTarget: 15.2 },
+      2024: { mpg: 22, stockBoost: 12.0, tank: 16.6, bhp: 271, stockTarget: 12.0, protuneTarget: 15.2 },
+      2025: { mpg: 22, stockBoost: 12.0, tank: 16.6, bhp: 271, stockTarget: 12.0, protuneTarget: 15.2 },
+      2026: { mpg: 22, stockBoost: 12.0, tank: 16.6, bhp: 271, stockTarget: 12.0, protuneTarget: 15.2 }
     };
 
-    document.getElementById('year').addEventListener('change', applyYearDefaults);
-    document.getElementById('newBoost').addEventListener('input', () => {
-      document.getElementById('newBoostValue').textContent = Number(document.getElementById('newBoost').value).toFixed(1);
-    });
+    const els = {
+      year: document.getElementById('year'),
+      baselineMpg: document.getElementById('baselineMpg'),
+      stockBoost: document.getElementById('stockBoost'),
+      tankSize: document.getElementById('tankSize'),
+      newBoost: document.getElementById('newBoost'),
+      newBoostValue: document.getElementById('newBoostValue'),
+      boostUse: document.getElementById('boostUse'),
+      boostUseValue: document.getElementById('boostUseValue'),
+      drivingStyle: document.getElementById('drivingStyle'),
+      tuneQuality: document.getElementById('tuneQuality'),
+      fuelType: document.getElementById('fuelType'),
+      supportMods: document.getElementById('supportMods'),
+      baseLife: document.getElementById('baseLife'),
+      resetBtn: document.getElementById('resetBtn'),
+      addedBoostOut: document.getElementById('addedBoostOut'),
+      bhpOut: document.getElementById('bhpOut'),
+      whpOut: document.getElementById('whpOut'),
+      newMpgOut: document.getElementById('newMpgOut'),
+      mpgLossOut: document.getElementById('mpgLossOut'),
+      rangeLossOut: document.getElementById('rangeLossOut'),
+      lifeOut: document.getElementById('lifeOut'),
+      milesLostOut: document.getElementById('milesLostOut'),
+      lifeRangeOut: document.getElementById('lifeRangeOut'),
+      confidenceOut: document.getElementById('confidenceOut'),
+      confidenceText: document.getElementById('confidenceText'),
+      riskPill: document.getElementById('riskPill'),
+      summaryText: document.getElementById('summaryText')
+    };
 
-    function applyYearDefaults() {
-      const year = document.getElementById('year').value;
-      const preset = yearDefaults[year];
-      document.getElementById('baselineMpg').value = preset.mpg;
-      document.getElementById('stockBoost').value = preset.boost;
-      document.getElementById('tankSize').value = preset.tank;
-      calculate();
-    }
-
-    function resetDefaults() {
-      document.getElementById('year').value = '2021';
-      document.getElementById('baselineMpg').value = 23;
-      document.getElementById('stockBoost').value = 15.9;
-      document.getElementById('newBoost').value = 20;
-      document.getElementById('newBoostValue').textContent = '20.0';
-      document.getElementById('tankSize').value = 15.9;
-      document.getElementById('drivingStyle').value = 'mixed';
-      document.getElementById('tuneQuality').value = 'protune';
-      document.getElementById('fuelType').value = '93';
-      document.getElementById('supportMods').value = 'basic';
-      document.getElementById('baseLife').value = 150000;
-      calculate();
+    function formatNumber(value) {
+      return Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 });
     }
 
     function getDrivingFactor(style) {
@@ -475,6 +503,7 @@
     }
 
     function getTuneFactor(tune) {
+      if (tune === 'stock') return 1.0;
       if (tune === 'protune') return 0.95;
       if (tune === 'aggressive') return 1.2;
       return 1.05;
@@ -492,40 +521,187 @@
       return 1.0;
     }
 
+    function getRisk(totalStress) {
+      if (totalStress < 1.1) {
+        return {
+          label: 'Low',
+          className: 'risk-pill risk-low',
+          text: 'This setup stays close to baseline assumptions and appears relatively low risk in this model.'
+        };
+      }
+      if (totalStress < 1.3) {
+        return {
+          label: 'Moderate',
+          className: 'risk-pill risk-moderate',
+          text: 'This setup adds noticeable stress, but it still lands in a moderate range with decent support.'
+        };
+      }
+      if (totalStress < 1.55) {
+        return {
+          label: 'High',
+          className: 'risk-pill risk-high',
+          text: 'This setup significantly increases modeled stress and may reduce long-term reliability.'
+        };
+      }
+      return {
+        label: 'Severe',
+        className: 'risk-pill risk-severe',
+        text: 'This setup greatly increases modeled stress and suggests a major reliability penalty.'
+      };
+    }
+
+
+    function getStockBhp(year) {
+      return year >= 2022 ? 271 : 268;
+    }
+
+    function getEstimateConfidence(addedBoost, tune, fuel, mods) {
+      let score = 100;
+      if (addedBoost > 6) score -= 28;
+      else if (addedBoost > 4) score -= 18;
+      else if (addedBoost > 2) score -= 10;
+
+      if (tune === 'stock') score += 3;
+      if (tune === 'ots') score -= 8;
+      if (tune === 'aggressive') score -= 18;
+
+      if (fuel === '91') score -= 10;
+      if (fuel === 'e30') score += 4;
+
+      if (mods === 'none') score -= 8;
+      if (mods === 'full') score += 4;
+
+      score = Math.max(40, Math.min(96, score));
+
+      if (score >= 82) {
+        return {
+          label: 'Moderate–High',
+          spread: 0.06,
+          text: 'This setup stays closer to the stock calibration, so the estimate is more useful for comparison. It is still not a dyno replacement.'
+        };
+      }
+      if (score >= 68) {
+        return {
+          label: 'Moderate',
+          spread: 0.08,
+          text: 'Useful for comparing setups, but the exact numbers can move around a fair amount with tune details, temperature, and drivetrain differences.'
+        };
+      }
+      return {
+        label: 'Low–Moderate',
+        spread: 0.11,
+        text: 'Because boost, tune, fuel, or support assumptions are more aggressive here, treat the outputs as broad scenario estimates rather than likely exact results.'
+      };
+    }
+
+    function syncBoostTargetForTune() {
+      const preset = yearDefaults[els.year.value];
+      const tune = els.tuneQuality.value;
+      let target = Number(els.newBoost.value);
+
+      if (tune === 'stock') target = preset.stockTarget;
+      else if (tune === 'protune') target = preset.protuneTarget;
+
+      els.newBoost.value = target.toFixed(1);
+      els.newBoostValue.textContent = Number(els.newBoost.value).toFixed(1);
+    }
+
+    function applyYearDefaults() {
+      const preset = yearDefaults[els.year.value];
+      els.baselineMpg.value = preset.mpg;
+      els.stockBoost.value = preset.stockBoost;
+      els.tankSize.value = preset.tank;
+      syncBoostTargetForTune();
+      calculate();
+    }
+
+    function resetDefaults() {
+      els.year.value = '2026';
+      els.boostUse.value = 25;
+      els.boostUseValue.textContent = '25';
+      els.drivingStyle.value = 'mixed';
+      els.tuneQuality.value = 'protune';
+      els.fuelType.value = '93';
+      els.supportMods.value = 'basic';
+      els.baseLife.value = 210000;
+      applyYearDefaults();
+    }
+
     function calculateEstimate(boostValue) {
-      const baselineMpg = Number(document.getElementById('baselineMpg').value);
-      const stockBoost = Number(document.getElementById('stockBoost').value);
-      const tankSize = Number(document.getElementById('tankSize').value);
-      const drivingStyle = document.getElementById('drivingStyle').value;
-      const tuneQuality = document.getElementById('tuneQuality').value;
-      const fuelType = document.getElementById('fuelType').value;
-      const supportMods = document.getElementById('supportMods').value;
-      const baseLife = Number(document.getElementById('baseLife').value);
+      const year = Number(els.year.value);
+      const baselineMpg = Number(els.baselineMpg.value);
+      const stockBoost = Number(els.stockBoost.value);
+      const tankSize = Number(els.tankSize.value);
+      const driving = getDrivingFactor(els.drivingStyle.value);
+      const tuneQuality = els.tuneQuality.value;
+      const fuelType = els.fuelType.value;
+      const supportMods = els.supportMods.value;
+      const boostUsePercent = Number(els.boostUse.value) / 100;
+      const baseLife = Number(els.baseLife.value);
 
       const addedBoost = Math.max(0, boostValue - stockBoost);
+      const stockBhp = getStockBhp(year);
 
-      const boostFactor = 0.45;
-      const driving = getDrivingFactor(drivingStyle);
-      const mpgLoss = addedBoost * boostFactor * driving.mpg;
-      const newMpg = Math.max(5, baselineMpg - mpgLoss);
+      // Horsepower estimate:
+      // Use absolute pressure ratio instead of raw psi-to-hp. This is still simplified,
+      // but it tracks turbo behavior better than assuming each psi adds a fixed number.
+      const stockPressureRatio = (14.7 + stockBoost) / 14.7;
+      const newPressureRatio = (14.7 + boostValue) / 14.7;
+      const pressureRatioGain = newPressureRatio / stockPressureRatio;
+
+      // Exponent below 1.0 bakes in that airflow, timing, heat, and turbo efficiency
+      // usually prevent power from climbing one-for-one with pressure ratio.
+      const basePowerMultiplier = Math.pow(Math.max(0.88, pressureRatioGain), 0.74);
+
+      const tunePowerFactor = tuneQuality === 'stock' ? 0.97 : (tuneQuality === 'protune' ? 1.00 : (tuneQuality === 'ots' ? 0.98 : 1.01));
+      const fuelPowerFactor = fuelType === 'e30' ? 1.05 : (fuelType === '93' ? 1.00 : 0.97);
+      const supportPowerFactor = supportMods === 'full' ? 1.04 : (supportMods === 'basic' ? 1.00 : 0.97);
+
+      // Later VB cars often dyno a little more efficiently through the drivetrain than VA cars.
+      const drivetrainLoss = year >= 2022 ? 0.18 : 0.20;
+
+      const estimatedBhp = Math.max(stockBhp * 0.88, stockBhp * basePowerMultiplier * tunePowerFactor * fuelPowerFactor * supportPowerFactor);
+      const estimatedWhp = estimatedBhp * (1 - drivetrainLoss);
+
+      const confidence = getEstimateConfidence(addedBoost, tuneQuality, fuelType, supportMods);
+      const bhpLow = estimatedBhp * (1 - confidence.spread);
+      const bhpHigh = estimatedBhp * (1 + confidence.spread);
+      const whpLow = estimatedWhp * (1 - confidence.spread);
+      const whpHigh = estimatedWhp * (1 + confidence.spread);
+
+      const offBoostEfficiencyGain = Math.max(0, (1 - boostUsePercent) * Math.min(addedBoost, 2) * 0.10);
+      const tunePenaltyAdder = tuneQuality === 'stock' ? 0.96 : (tuneQuality === 'protune' ? 1.0 : (tuneQuality === 'ots' ? 1.08 : 1.18));
+      const vbPenaltyAdjust = year >= 2022 ? 0.95 : 1.0;
+      const boostPenalty = addedBoost * 0.38 * driving.mpg * (0.30 + boostUsePercent * 1.75) * tunePenaltyAdder * vbPenaltyAdjust;
+
+      const mpgDelta = offBoostEfficiencyGain - boostPenalty;
+      const newMpg = Math.max(5, baselineMpg + mpgDelta);
+      const mpgLoss = Math.max(0, baselineMpg - newMpg);
 
       const oldRange = baselineMpg * tankSize;
       const newRange = newMpg * tankSize;
       const rangeLost = oldRange - newRange;
 
-      const boostStress = 1 + (addedBoost * 0.06);
-      const tuneFactor = getTuneFactor(tuneQuality);
-      const fuelFactor = getFuelFactor(fuelType);
-      const supportFactor = getSupportFactor(supportMods);
-      const totalStress = boostStress * driving.stress * tuneFactor * fuelFactor * supportFactor;
+      const boostStress = 1 + (addedBoost * 0.042);
+      const timeInBoostStress = 1 + (boostUsePercent * 0.55);
+      const powerStress = 1 + Math.max(0, (estimatedBhp - stockBhp) / stockBhp) * 0.28;
+      const vbReliabilityAdjust = year >= 2022 ? 0.97 : 1.0;
+      const totalStress = boostStress * timeInBoostStress * powerStress * driving.stress * getTuneFactor(tuneQuality) * getFuelFactor(fuelType) * getSupportFactor(supportMods) * vbReliabilityAdjust;
 
       const expectedLife = Math.max(10000, baseLife / totalStress);
-      const bestCaseLife = Math.max(10000, baseLife / (totalStress * 0.9));
-      const worstCaseLife = Math.max(10000, baseLife / (totalStress * 1.15));
+      const bestCaseLife = Math.max(10000, baseLife / (totalStress * 0.92));
+      const worstCaseLife = Math.max(10000, baseLife / (totalStress * 1.12));
       const milesLost = Math.max(0, baseLife - expectedLife);
 
       return {
+        stockBhp,
         addedBoost,
+        estimatedBhp,
+        estimatedWhp,
+        bhpLow,
+        bhpHigh,
+        whpLow,
+        whpHigh,
         mpgLoss,
         newMpg,
         rangeLost,
@@ -533,66 +709,35 @@
         bestCaseLife,
         worstCaseLife,
         milesLost,
-        totalStress
-      };
-    }
-
-    function formatNumber(value) {
-      return Number(value).toLocaleString(undefined, { maximumFractionDigits: 0 });
-    }
-
-    function getRisk(totalStress) {
-      if (totalStress < 1.1) {
-        return {
-          label: 'Low',
-          className: 'risk-low',
-          text: 'This setup stays close to baseline assumptions and appears relatively low risk in this model.'
-        };
-      }
-      if (totalStress < 1.3) {
-        return {
-          label: 'Moderate',
-          className: 'risk-moderate',
-          text: 'This setup adds noticeable stress, but it still lands in a moderate range with reasonable supporting conditions.'
-        };
-      }
-      if (totalStress < 1.55) {
-        return {
-          label: 'High',
-          className: 'risk-high',
-          text: 'This setup significantly increases modeled stress and may reduce long-term reliability without excellent tuning and maintenance.'
-        };
-      }
-      return {
-        label: 'Severe',
-        className: 'risk-severe',
-        text: 'This setup greatly increases modeled stress and suggests a major reliability penalty in this estimate.'
+        totalStress,
+        confidence,
+        offBoostEfficiencyGain,
+        boostPenalty
       };
     }
 
     function calculate() {
-      const newBoost = Number(document.getElementById('newBoost').value);
-      const result = calculateEstimate(newBoost);
+      const result = calculateEstimate(Number(els.newBoost.value));
 
-      document.getElementById('addedBoostOut').textContent = result.addedBoost.toFixed(1) + ' psi';
-      document.getElementById('newMpgOut').textContent = result.newMpg.toFixed(1) + ' mpg';
-      document.getElementById('mpgLossOut').textContent = result.mpgLoss.toFixed(1) + ' mpg';
-      document.getElementById('rangeLossOut').textContent = result.rangeLost.toFixed(1) + ' miles';
-      document.getElementById('lifeOut').textContent = formatNumber(result.expectedLife) + ' mi';
-      document.getElementById('milesLostOut').textContent = formatNumber(result.milesLost) + ' mi';
-      document.getElementById('lifeRangeOut').textContent =
-        formatNumber(result.worstCaseLife) + ' - ' + formatNumber(result.bestCaseLife) + ' mi';
+      els.addedBoostOut.textContent = result.addedBoost.toFixed(1) + ' psi';
+      els.bhpOut.textContent = formatNumber(result.estimatedBhp) + ' bhp';
+      els.whpOut.textContent = formatNumber(result.estimatedWhp) + ' whp';
+      els.newMpgOut.textContent = result.newMpg.toFixed(1) + ' mpg';
+      els.mpgLossOut.textContent = result.mpgLoss.toFixed(1) + ' mpg';
+      els.rangeLossOut.textContent = result.rangeLost.toFixed(1) + ' miles';
+      els.lifeOut.textContent = formatNumber(result.expectedLife) + ' mi';
+      els.milesLostOut.textContent = formatNumber(result.milesLost) + ' mi';
+      els.lifeRangeOut.textContent = formatNumber(result.worstCaseLife) + ' - ' + formatNumber(result.bestCaseLife) + ' mi';
 
       const risk = getRisk(result.totalStress);
-      const pill = document.getElementById('riskPill');
-      pill.textContent = risk.label;
-      pill.className = 'risk-pill ' + risk.className;
-      document.getElementById('summaryText').textContent = risk.text;
+      els.riskPill.textContent = risk.label;
+      els.riskPill.className = risk.className;
+      els.summaryText.textContent = `${risk.text} Estimated output: ${formatNumber(result.estimatedWhp)} whp / ${formatNumber(result.estimatedBhp)} bhp. Off-boost gain estimate: +${result.offBoostEfficiencyGain.toFixed(2)} mpg. In-boost penalty estimate: -${result.boostPenalty.toFixed(2)} mpg.`;
 
       drawCharts();
     }
 
-    function drawLineChart(canvasId, values, label, suffix) {
+    function drawLineChart(canvasId, values, label, yLabel) {
       const canvas = document.getElementById(canvasId);
       const ctx = canvas.getContext('2d');
       const w = canvas.width;
@@ -609,7 +754,6 @@
 
       ctx.strokeStyle = '#475569';
       ctx.lineWidth = 1;
-
       for (let i = 0; i < 5; i++) {
         const y = padding + ((h - padding * 2) / 4) * i;
         ctx.beginPath();
@@ -644,12 +788,10 @@
       values.forEach((point, index) => {
         const x = padding + (index / (values.length - 1)) * (w - padding * 2);
         const y = h - padding - ((point.y - minY) / yRange) * (h - padding * 2);
-
         ctx.beginPath();
         ctx.arc(x, y, 4, 0, Math.PI * 2);
         ctx.fillStyle = '#93c5fd';
         ctx.fill();
-
         ctx.fillStyle = '#cbd5e1';
         ctx.fillText(point.x.toFixed(0), x - 8, h - padding + 18);
       });
@@ -659,12 +801,12 @@
       ctx.save();
       ctx.translate(15, h / 2 + 20);
       ctx.rotate(-Math.PI / 2);
-      ctx.fillText(suffix, 0, 0);
+      ctx.fillText(yLabel, 0, 0);
       ctx.restore();
     }
 
     function drawCharts() {
-      const stockBoost = Number(document.getElementById('stockBoost').value);
+      const stockBoost = Number(els.stockBoost.value);
       const points = [];
 
       for (let psi = stockBoost; psi <= stockBoost + 8; psi += 1) {
@@ -672,22 +814,33 @@
         points.push({ psi, mpg: result.newMpg, life: result.expectedLife });
       }
 
-      drawLineChart(
-        'mpgChart',
-        points.map(p => ({ x: p.psi, y: p.mpg })),
-        'Estimated MPG vs Boost',
-        'MPG'
-      );
-
-      drawLineChart(
-        'lifeChart',
-        points.map(p => ({ x: p.psi, y: p.life })),
-        'Estimated Engine Life vs Boost',
-        'Miles'
-      );
+      drawLineChart('mpgChart', points.map(p => ({ x: p.psi, y: p.mpg })), 'Estimated MPG vs Boost', 'MPG');
+      drawLineChart('lifeChart', points.map(p => ({ x: p.psi, y: p.life })), 'Estimated Engine Life vs Boost', 'Miles');
     }
 
-    calculate();
+    els.year.addEventListener('change', applyYearDefaults);
+    els.newBoost.addEventListener('input', () => {
+      els.newBoostValue.textContent = Number(els.newBoost.value).toFixed(1);
+      calculate();
+    });
+    els.boostUse.addEventListener('input', () => {
+      els.boostUseValue.textContent = els.boostUse.value;
+      calculate();
+    });
+    els.drivingStyle.addEventListener('change', calculate);
+    els.tuneQuality.addEventListener('change', () => {
+      syncBoostTargetForTune();
+      calculate();
+    });
+    els.fuelType.addEventListener('change', calculate);
+    els.supportMods.addEventListener('change', calculate);
+    els.baselineMpg.addEventListener('input', calculate);
+    els.stockBoost.addEventListener('input', calculate);
+    els.tankSize.addEventListener('input', calculate);
+    els.baseLife.addEventListener('input', calculate);
+    els.resetBtn.addEventListener('click', resetDefaults);
+
+    applyYearDefaults();
   </script>
 </body>
 </html>
